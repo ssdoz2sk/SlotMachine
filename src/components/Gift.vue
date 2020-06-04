@@ -21,6 +21,10 @@ export default {
       type: Date,
       default: false
     },
+    resetTrigger: {
+      type: Date,
+      default: false
+    },
     config: {
       type: Object,
       required: true
@@ -54,6 +58,9 @@ export default {
     },
     trigger () {
       this.autoTurn()
+    },
+    resetTrigger () {
+      this.reset()
     },
     isRunning () {
       if (this.isRunning) {
@@ -92,8 +99,17 @@ export default {
     autoTurn () {
       // 取得隨機角度(預設至少跑5圈)
       let randomDeg = (Math.random() * 360) + (360 * 5)
+      if (this.config.targetGift) {
+        let targetGiftIndex = this.config.gifts.findIndex(g => g.name === this.config.targetGift)
+        if (targetGiftIndex !== -1) {
+          randomDeg = targetGiftIndex / this.config.gifts.length * 360 + (360 * 5)
+        } else {
+          randomDeg = 0
+        }
+      }
       randomDeg -= randomDeg % this.rotate // 減去餘數，避免有高低不一的狀況
       this.targetDeg = randomDeg
+      console.log(this.targetDeg)
       // 取得隨機回彈角度
       const randomRollBackDeg = this.config.rollback
         ? Math.random() * this.config.rollback + 1
@@ -119,6 +135,10 @@ export default {
       // 宣告轉動結束
       this.isRunning = false
       this.$emit('finished', giftName) // 告訴上層已經轉完
+    },
+    reset () {
+      this.currentDeg = 0
+      this.$el.style.setProperty('--currentDeg', `-${this.currentDeg}deg`)
     }
   }
 }
