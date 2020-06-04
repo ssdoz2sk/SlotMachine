@@ -191,6 +191,8 @@ export default {
           this.configs[1].gifts = Array.from(new Array(10), (val, index) => { return { type: 'image', path: './static/hsujm.jpg' } })
           this.configs[2].gifts = Array.from(new Array(10), (val, index) => { return { type: 'image', path: './static/hsujm.jpg' } })
         }
+        this.randomSelectClick()
+        this.resetTrigger = new Date()
       }
     }
   },
