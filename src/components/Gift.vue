@@ -109,7 +109,6 @@ export default {
       }
       randomDeg -= randomDeg % this.rotate // 減去餘數，避免有高低不一的狀況
       this.targetDeg = randomDeg
-      console.log(this.targetDeg)
       // 取得隨機回彈角度
       const randomRollBackDeg = this.config.rollback
         ? Math.random() * this.config.rollback + 1

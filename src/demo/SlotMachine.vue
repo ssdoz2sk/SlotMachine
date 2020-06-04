@@ -28,28 +28,40 @@
     </div>
     <div class="select-button-group">
       <div
-       class="select-button" @click="intellectualAchievementAwardClick(1)">
+        class="select-button"
+        :class="{ 'disabled': disabled }"
+        @click="!disabled && intellectualAchievementAwardClick(1)">
         智育獎 1
       </div>
       <div
-       class="select-button" @click="intellectualAchievementAwardClick(2)">
+        class="select-button"
+        :class="{ 'disabled': disabled }"
+        @click="!disabled && intellectualAchievementAwardClick(2)">
         智育獎 2
       </div>
       <div
-       class="select-button" @click="intellectualAchievementAwardClick(3)">
+        class="select-button"
+        :class="{ 'disabled': disabled }"
+        @click="!disabled && intellectualAchievementAwardClick(3)">
         智育獎 3
       </div>
       <div
-       class="select-button" @click="moralAchievementAwardClick()">
+        class="select-button"
+        :class="{ 'disabled': disabled }"
+        @click="!disabled && moralAchievementAwardClick()">
         德育獎
       </div>
       <div
-       class="select-button" @click="sportsAchievementAwardClick()">
+        class="select-button"
+        :class="{ 'disabled': disabled }"
+        @click="!disabled && sportsAchievementAwardClick()">
         體育獎
       </div>
       <div
-       class="select-button" @click="randomSelectClick()">
-        隨機
+        class="select-button"
+        :class="{ 'disabled': disabled }"
+        @click="!disabled && randomSelectClick()">
+        幸運獎
       </div>
     </div>
     <div
@@ -68,28 +80,22 @@
             </span>
           </div>
           <div>
-            <span>智育獎1：{{ awards.intellectualAchievementAward1 }}</span>
-          </div>
-          <div>
-            <span>智育獎2：{{ awards.intellectualAchievementAward2 }}</span>
-          </div>
-          <div>
-            <span>智育獎3：{{ awards.intellectualAchievementAward3 }}</span>
-          </div>
-          <div>
-            <span>德育獎：{{ awards.moralAchievementAward }}</span>
-          </div>
-          <div>
-            <span>體育獎：{{ awards.sportsAchievementAward }}</span>
+            <ul>
+              <li>智育獎1：{{ awards.intellectualAchievementAward1 }}</li>
+              <li>智育獎2：{{ awards.intellectualAchievementAward2 }}</li>
+              <li>智育獎3：{{ awards.intellectualAchievementAward3 }}</li>
+              <li>德育獎：{{ awards.moralAchievementAward }}</li>
+              <li>體育獎：{{ awards.sportsAchievementAward }}</li>
+            </ul>
           </div>
           <div class="info">
             <span>
               <small>如果名單已經匯入，將會存在 localStorage，關閉瀏覽器也不會消失，可以按最下方按鈕清除所有已存在的資訊，或重新匯入檔案</small>
             </span>
           </div>
-          <div>
+          <div class="select-button-group">
             <div
-              class="select-button" @click="reset()">
+              class="select-button" @click="reset()" style="flex-direction: row-reverse;justify-content: flex-end">
                 清空
             </div>
           </div>
@@ -120,7 +126,7 @@ export default {
       configs: [
         {
           style: 'gift-style',
-          gifts: Array.from(new Array(10), (val, index) => { return { type: 'text', name: index } }),
+          gifts: Array.from(new Array(10), (val, index) => { return { type: 'image', path: '/static/hsujm.jpg' } }),
           targetGift: null,
           duration: 4000,
           fontSize: 150,
@@ -129,7 +135,7 @@ export default {
         },
         {
           style: 'gift-style',
-          gifts: Array.from(new Array(10), (val, index) => { return { type: 'text', name: index } }),
+          gifts: Array.from(new Array(10), (val, index) => { return { type: 'image', path: '/static/hsujm.jpg' } }),
           targetGift: null,
           duration: 5000,
           fontSize: 150,
@@ -138,7 +144,7 @@ export default {
         },
         {
           style: 'gift-style',
-          gifts: Array.from(new Array(10), (val, index) => { return { type: 'text', name: index } }),
+          gifts: Array.from(new Array(10), (val, index) => { return { type: 'image', path: '/static/hsujm.jpg' } }),
           targetGift: null,
           duration: 6000,
           fontSize: 150,
@@ -164,20 +170,27 @@ export default {
   watch: {
     'nameList': {
       handler: function (newValue) {
-        const nameSplitList = newValue.map(name => this.splitName(name))
-          .reduce((previousValue, currentValue) => {
-            previousValue.lastName.push({type: 'text', name: currentValue[0]})
-            previousValue.firstName1.push({type: 'text', name: currentValue[1]})
-            previousValue.firstName2.push({type: 'text', name: currentValue[2]})
-            return previousValue
-          }, {
-            lastName: [{type: 'image', path: '/static/hsujm.jpg'}],
-            firstName1: [{type: 'image', path: '/static/hsujm.jpg'}],
-            firstName2: [{type: 'image', path: '/static/hsujm.jpg'}]
-          })
-        this.configs[0].gifts = nameSplitList.lastName
-        this.configs[1].gifts = nameSplitList.firstName1
-        this.configs[2].gifts = nameSplitList.firstName2
+        if (newValue.length !== 0) {
+          const nameSplitList = newValue.map(name => this.splitName(name))
+            .reduce((previousValue, currentValue) => {
+              previousValue.lastName.push({type: 'text', name: currentValue[0]})
+              previousValue.firstName1.push({type: 'text', name: currentValue[1]})
+              previousValue.firstName2.push({type: 'text', name: currentValue[2]})
+              return previousValue
+            }, {
+              lastName: [{type: 'image', path: '/static/hsujm.jpg'}],
+              firstName1: [{type: 'image', path: '/static/hsujm.jpg'}],
+              firstName2: [{type: 'image', path: '/static/hsujm.jpg'}]
+            })
+
+          this.configs[0].gifts = nameSplitList.lastName
+          this.configs[1].gifts = nameSplitList.firstName1
+          this.configs[2].gifts = nameSplitList.firstName2
+        } else {
+          this.configs[0].gifts = Array.from(new Array(10), (val, index) => { return { type: 'image', path: '/static/hsujm.jpg' } })
+          this.configs[1].gifts = Array.from(new Array(10), (val, index) => { return { type: 'image', path: '/static/hsujm.jpg' } })
+          this.configs[2].gifts = Array.from(new Array(10), (val, index) => { return { type: 'image', path: '/static/hsujm.jpg' } })
+        }
       }
     }
   },
@@ -271,14 +284,14 @@ export default {
     },
     turn () {
       if (this.isRandomSelect) {
-        if (this.nameList.length === 0) {
-          return
+        if (this.nameList.length !== 0) {
+          let randomIndex = Math.ceil(Math.random() * this.nameList.length) // 因為 index0 是頭像或問號
+          this.configs[0].targetGift = this.configs[0].gifts[randomIndex].name
+          this.configs[1].targetGift = this.configs[1].gifts[randomIndex].name
+          this.configs[2].targetGift = this.configs[2].gifts[randomIndex].name
         }
-        let randomIndex = Math.ceil(Math.random() * this.nameList.length) // 因為 index0 是頭像或問號
-        this.configs[0].targetGift = this.configs[0].gifts[randomIndex].name
-        this.configs[1].targetGift = this.configs[1].gifts[randomIndex].name
-        this.configs[2].targetGift = this.configs[2].gifts[randomIndex].name
       }
+      new Audio('/static/smj2.mp3').play()
       this.active = true
       setTimeout(() => {
         this.active = false
@@ -287,6 +300,7 @@ export default {
       this.trigger = new Date()
     },
     isFinished (val) {
+      new Audio('/static/pyo1.mp3').play()
       const autoTurnList = this.$el.querySelectorAll('.autoTurn')
       this.result.push(val)
       if (autoTurnList.length === 1) {
@@ -528,6 +542,10 @@ export default {
       top: -6px;
       content: ' ';
     }
+
+    &.disabled {
+      cursor: not-allowed;
+    }
   }
   .resultList {
     position: fixed;
@@ -551,7 +569,6 @@ export default {
       position: absolute;
       padding: 20px;
       min-width: 600px;
-      height: 400px;
       border: solid 5px $blue;
       border-radius: 30px;
       background-color: $white;
