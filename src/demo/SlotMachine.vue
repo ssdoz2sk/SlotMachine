@@ -126,7 +126,7 @@ export default {
       configs: [
         {
           style: 'gift-style',
-          gifts: Array.from(new Array(10), (val, index) => { return { type: 'image', path: '/static/hsujm.jpg' } }),
+          gifts: Array.from(new Array(10), (val, index) => { return { type: 'image', path: './static/hsujm.jpg' } }),
           targetGift: null,
           duration: 4000,
           fontSize: 150,
@@ -135,7 +135,7 @@ export default {
         },
         {
           style: 'gift-style',
-          gifts: Array.from(new Array(10), (val, index) => { return { type: 'image', path: '/static/hsujm.jpg' } }),
+          gifts: Array.from(new Array(10), (val, index) => { return { type: 'image', path: './static/hsujm.jpg' } }),
           targetGift: null,
           duration: 5000,
           fontSize: 150,
@@ -144,7 +144,7 @@ export default {
         },
         {
           style: 'gift-style',
-          gifts: Array.from(new Array(10), (val, index) => { return { type: 'image', path: '/static/hsujm.jpg' } }),
+          gifts: Array.from(new Array(10), (val, index) => { return { type: 'image', path: './static/hsujm.jpg' } }),
           targetGift: null,
           duration: 6000,
           fontSize: 150,
@@ -178,18 +178,18 @@ export default {
               previousValue.firstName2.push({type: 'text', name: currentValue[2]})
               return previousValue
             }, {
-              lastName: [{type: 'image', path: '/static/hsujm.jpg'}],
-              firstName1: [{type: 'image', path: '/static/hsujm.jpg'}],
-              firstName2: [{type: 'image', path: '/static/hsujm.jpg'}]
+              lastName: [{type: 'image', path: './static/hsujm.jpg'}],
+              firstName1: [{type: 'image', path: './static/hsujm.jpg'}],
+              firstName2: [{type: 'image', path: './static/hsujm.jpg'}]
             })
 
           this.configs[0].gifts = nameSplitList.lastName
           this.configs[1].gifts = nameSplitList.firstName1
           this.configs[2].gifts = nameSplitList.firstName2
         } else {
-          this.configs[0].gifts = Array.from(new Array(10), (val, index) => { return { type: 'image', path: '/static/hsujm.jpg' } })
-          this.configs[1].gifts = Array.from(new Array(10), (val, index) => { return { type: 'image', path: '/static/hsujm.jpg' } })
-          this.configs[2].gifts = Array.from(new Array(10), (val, index) => { return { type: 'image', path: '/static/hsujm.jpg' } })
+          this.configs[0].gifts = Array.from(new Array(10), (val, index) => { return { type: 'image', path: './static/hsujm.jpg' } })
+          this.configs[1].gifts = Array.from(new Array(10), (val, index) => { return { type: 'image', path: './static/hsujm.jpg' } })
+          this.configs[2].gifts = Array.from(new Array(10), (val, index) => { return { type: 'image', path: './static/hsujm.jpg' } })
         }
       }
     }
@@ -291,7 +291,7 @@ export default {
           this.configs[2].targetGift = this.configs[2].gifts[randomIndex].name
         }
       }
-      new Audio('/static/smj2.mp3').play()
+      new Audio('./static/smj2.mp3').play()
       this.active = true
       setTimeout(() => {
         this.active = false
@@ -300,7 +300,7 @@ export default {
       this.trigger = new Date()
     },
     isFinished (val) {
-      new Audio('/static/pyo1.mp3').play()
+      new Audio('./static/pyo1.mp3').play()
       const autoTurnList = this.$el.querySelectorAll('.autoTurn')
       this.result.push(val)
       if (autoTurnList.length === 1) {
