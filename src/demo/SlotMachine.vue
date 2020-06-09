@@ -71,15 +71,6 @@
         <div class="result">
           <div class="msg">{{ msg }}</div>
           <div>
-            <label for="nameListInput">名單匯入</label>
-            <input type="file" id="nameListInput" @change="readNameList">
-          </div>
-          <div>
-            <span>
-              <small>請使用只有名字的 UTF-8 檔案, 每行一個人名，後面使用空白隔開他獲得的獎項</small>
-            </span>
-          </div>
-          <div>
             <ul>
               <li>智育獎1：{{ awards.intellectualAchievementAward1 }}</li>
               <li>智育獎2：{{ awards.intellectualAchievementAward2 }}</li>
@@ -90,14 +81,11 @@
           </div>
           <div class="info">
             <span>
-              <small>如果名單已經匯入，將會存在 localStorage，關閉瀏覽器也不會消失，可以按最下方按鈕清除所有已存在的資訊，或重新匯入檔案</small>
+              <small>請在 static 目錄下放 nameList.txt 檔案</small>
             </span>
-          </div>
-          <div class="select-button-group">
-            <div
-              class="select-button" @click="reset()" style="flex-direction: row-reverse;justify-content: flex-end">
-                清空
-            </div>
+            <span>
+              <small>且檔案為 UTF-8 檔案，每行首先是人名，後面使用空白隔開他獲得的獎項</small>
+            </span>
           </div>
         </div>
       </div>
@@ -241,13 +229,16 @@ export default {
       }
       return name
     },
-    readNameList (ev) {
-      const file = ev.target.files[0]
-      const reader = new FileReader()
+    readNameList () {
+      const xmlhttp = new XMLHttpRequest()
+      let result = ''
+      xmlhttp.open('GET', './static/nameList.txt', true)
+      xmlhttp.onload = (e) => {
+        if (xmlhttp.status === 200) {
+          result = xmlhttp.responseText
+        }
 
-      reader.onload = e => {
-        this.$emit('load', e.target.result)
-        const nameList = e.target.result.split('\n')
+        const nameList = result.split('\n')
         this.nameList = nameList.map(n => n.trim().split(' ')[0])
 
         nameList.forEach(n => {
@@ -269,11 +260,9 @@ export default {
           }
         })
 
-        window.localStorage.setItem('awards', JSON.stringify(this.awards))
-        window.localStorage.setItem('nameList', JSON.stringify(this.nameList))
         this.resetTrigger = new Date()
       }
-      reader.readAsText(file)
+      xmlhttp.send()
     },
     randomSelectClick () {
       this.configs.forEach(config => {
@@ -391,17 +380,7 @@ export default {
     }
   },
   mounted: function () {
-    let awards = window.localStorage.getItem('awards')
-    let nameList = window.localStorage.getItem('nameList')
-
-    if (awards) {
-      awards = JSON.parse(awards)
-      this.awards = Object.assign({}, this.awards, awards)
-    }
-    if (nameList) {
-      nameList = JSON.parse(nameList)
-      this.nameList = nameList
-    }
+    this.readNameList()
   }
 }
 </script>
