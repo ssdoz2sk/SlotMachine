@@ -105,6 +105,30 @@
     <div class="setting">
       <span @click="openSetting = true">→ Setting</span>
     </div>
+    <div class="music">
+      <div class="music-wrapper">
+        <div class="music-controller">
+          <div class="play-icon" @click="playMusic"></div>
+          <div class="stop-icon" @click="stopMusic"></div>
+          <div class="add-icon" @click="volumeUp"></div>
+          <div class="sub-icon" @click="volumeDown"></div>
+          <div> {{ Math.round(musicVolume * 100) }}% </div>
+        </div>
+        <div class="music-filter-tab"
+          @mouseover="showMusics = true"
+          @mouseleave="showMusics = false">
+          <template
+            v-if="showMusics">
+            <div
+              v-for="m in musics"
+              :class="{'select-music': m === selectMusic}"
+              :key="m"
+              @click="(selectMusic = m) && stopMusic()">{{ m }}</div>
+          </template>
+          <div v-if="!showMusics" class="select-music">{{ selectMusic }}</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -164,7 +188,18 @@ export default {
         intellectualAchievementAward3: '',
         moralAchievementAward: '',
         sportsAchievementAward: ''
-      }
+      },
+      musics: [
+        '01_頒獎音樂.mp3',
+        '02_頒獎音樂.mp3',
+        '03_頒獎音樂.mp3',
+        '04_頒獎音樂.mp3',
+        '05_頒獎音樂.mp3'
+      ],
+      showMusics: false,
+      selectMusic: '01_頒獎音樂.mp3',
+      musicVolume: 1,
+      music: null
     }
   },
   watch: {
@@ -284,6 +319,37 @@ export default {
       this.resetTrigger = new Date()
       this.isRandomSelect = false
     },
+    playMusic () {
+      if (this.music && !this.music.paused) {
+        return
+      }
+      this.music = new Audio(`./static/${this.selectMusic}`)
+      this.music.volume = this.musicVolume
+      this.music.play()
+    },
+    stopMusic () {
+      if (this.music) {
+        this.music.pause()
+      }
+    },
+    volumeUp () {
+      this.musicVolume += 0.05
+      if (this.musicVolume > 1) {
+        this.musicVolume = 1
+      }
+      if (this.music) {
+        this.music.volume = this.musicVolume
+      }
+    },
+    volumeDown () {
+      this.musicVolume -= 0.05
+      if (this.musicVolume < 0) {
+        this.musicVolume = 0
+      }
+      if (this.music) {
+        this.music.volume = this.musicVolume
+      }
+    },
     turn () {
       if (this.isRandomSelect) {
         if (this.nameList.length !== 0) {
@@ -363,7 +429,7 @@ export default {
   user-select: none;
   .badge {
     position: relative;
-    margin-top: 30px;
+    margin-top: 90px;
     margin-bottom: 200px;
     display: flex;
     justify-content: center;
@@ -507,13 +573,94 @@ export default {
       color: #fff;
     }
   }
+  .music {
+    position: fixed;
+    z-index: auto;
+    bottom: 20px;
+    right: 350px;
+    width: 0 !important;
+    height: 0 !important;
+  }
+  .music-wrapper {
+    width: 350px;
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+  }
+  .music-filter-tab {
+    pointer-events: auto;
+    float: right;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  .music-filter-tab div, .music-controller div {
+    list-style: none;
+    float: right;
+    width: 100%;
+    border: solid 5px #09384e;
+    border-radius: 10px;
+    background-color: #ea5e56;
+    color: #f4f2e0;
+    position: relative;
+    cursor: pointer;
+
+    &:after {
+      position: absolute;
+      padding: 3px;
+      width: 100%;
+      height: 100%;
+      border: solid 3px #f4f2e0;
+      border-radius: 10px;
+      left: -6px;
+      top: -6px;
+      content: ' ';
+    }
+  }
+  div.select-music {
+    background-color: #2fb037;
+  }
+  .music-controller {
+    white-space: nowrap;
+    display: flex;
+  }
+  .play-icon {
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAAn0lEQVRIid3UIRJBURiG4WcoihlBZUYS7EAR7US1BVsQbUE1kh0omh2ImuIGVzCnKeb6At/MW7935j/n//nHHDBJCmpU2KCfEhSuWKKdEhTOmCcFhR1GSUGNO9bopgSFCxZopQSFI6ZJQY0HthimBIUbVuiUso/n9400GdEgIYg9cuybRhctdipOmDUtfieInevKa869bxaX7DFOFP9mnk7UnOofmTjvAAAAAElFTkSuQmCC)
+      no-repeat left center;
+    padding: 5px 0 5px 25px;
+    content: ' ';
+  }
+  .stop-icon {
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAAKklEQVRIiWNgGAUEACMa/z+1zWWikoE4wagFoxaMWjBqwagFoxaMAqIAAJDVASQdNdrDAAAAAElFTkSuQmCC)
+      no-repeat left center;
+    padding: 5px 0 5px 25px;
+    content: ' ';
+  }
+
+  .add-icon {
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAANElEQVRIiWNgGAVUBv+hmGjARCOHjFowagEVASMan6Q0Toy5NPcBqWA0J49aMBwtGAUEAQDVUQUcE0vhCwAAAABJRU5ErkJggg==)
+      no-repeat left center;
+    padding: 5px 0 5px 25px;
+    content: ' ';
+  }
+
+  .sub-icon {
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAAJUlEQVRIiWNgGAWjYBSMAoKAEY3/n9rmMlHJwFEwCkbBKKAEAAD0EQEED0po+gAAAABJRU5ErkJggg==)
+      no-repeat left center;
+    padding: 5px 0 5px 25px;
+    content: ' ';
+  }
   .select-button-group {
     display: flex;
-    flex-wrap: nowrap;
-
+    flex-wrap: wrap;
+    justify-content: center;
     padding: 15px;
   }
   .select-button {
+    flex-basis: 25%;
     position: relative;
     display: flex;
     align-items: center;
