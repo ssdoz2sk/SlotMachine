@@ -30,38 +30,8 @@
       <div
         class="select-button"
         :class="{ 'disabled': disabled }"
-        @click="!disabled && intellectualAchievementAwardClick(1)">
-        智育獎 1
-      </div>
-      <div
-        class="select-button"
-        :class="{ 'disabled': disabled }"
-        @click="!disabled && intellectualAchievementAwardClick(2)">
-        智育獎 2
-      </div>
-      <div
-        class="select-button"
-        :class="{ 'disabled': disabled }"
-        @click="!disabled && intellectualAchievementAwardClick(3)">
-        智育獎 3
-      </div>
-      <div
-        class="select-button"
-        :class="{ 'disabled': disabled }"
-        @click="!disabled && moralAchievementAwardClick()">
-        德育獎
-      </div>
-      <div
-        class="select-button"
-        :class="{ 'disabled': disabled }"
-        @click="!disabled && sportsAchievementAwardClick()">
-        體育獎
-      </div>
-      <div
-        class="select-button"
-        :class="{ 'disabled': disabled }"
         @click="!disabled && randomSelectClick()">
-        幸運獎
+        幸運抽
       </div>
     </div>
     <div
@@ -76,17 +46,8 @@
           </div>
           <div>
             <span>
-              <small>請使用只有名字的 UTF-8 檔案, 每行一個人名，後面使用空白隔開他獲得的獎項</small>
+              <small>請使用只有名字的 UTF-8 檔案, 每行一個人名</small>
             </span>
-          </div>
-          <div>
-            <ul>
-              <li>智育獎1：{{ awards.intellectualAchievementAward1 }}</li>
-              <li>智育獎2：{{ awards.intellectualAchievementAward2 }}</li>
-              <li>智育獎3：{{ awards.intellectualAchievementAward3 }}</li>
-              <li>德育獎：{{ awards.moralAchievementAward }}</li>
-              <li>體育獎：{{ awards.sportsAchievementAward }}</li>
-            </ul>
           </div>
           <div class="info">
             <span>
@@ -250,25 +211,6 @@ export default {
         const nameList = e.target.result.split('\n')
         this.nameList = nameList.map(n => n.trim().split(' ')[0])
 
-        nameList.forEach(n => {
-          let [name, ...awards] = n.trim().split(' ')
-          if (awards.find(award => award === '智育獎1')) {
-            this.awards.intellectualAchievementAward1 = name
-          }
-          if (awards.find(award => award === '智育獎2')) {
-            this.awards.intellectualAchievementAward2 = name
-          }
-          if (awards.find(award => award === '智育獎3')) {
-            this.awards.intellectualAchievementAward3 = name
-          }
-          if (awards.find(award => award === '德育獎')) {
-            this.awards.moralAchievementAward = name
-          }
-          if (awards.find(award => award === '體育獎')) {
-            this.awards.sportsAchievementAward = name
-          }
-        })
-
         window.localStorage.setItem('awards', JSON.stringify(this.awards))
         window.localStorage.setItem('nameList', JSON.stringify(this.nameList))
         this.resetTrigger = new Date()
@@ -282,42 +224,6 @@ export default {
       this.title = '資工系大抽獎'
       this.resetTrigger = new Date()
       this.isRandomSelect = true
-    },
-    intellectualAchievementAwardClick (rank) {
-      let name
-      if (rank === 1) {
-        name = this.splitName(this.awards.intellectualAchievementAward1)
-        this.title = '智育獎 - 第1名'
-      } else if (rank === 2) {
-        name = this.splitName(this.awards.intellectualAchievementAward2)
-        this.title = '智育獎 - 第2名'
-      } else if (rank === 3) {
-        name = this.splitName(this.awards.intellectualAchievementAward3)
-        this.title = '智育獎 - 第3名'
-      }
-      this.configs[0].targetGift = name[0]
-      this.configs[1].targetGift = name[1]
-      this.configs[2].targetGift = name[2]
-      this.resetTrigger = new Date()
-      this.isRandomSelect = false
-    },
-    moralAchievementAwardClick () {
-      const name = this.splitName(this.awards.moralAchievementAward)
-      this.title = '德育獎'
-      this.configs[0].targetGift = name[0]
-      this.configs[1].targetGift = name[1]
-      this.configs[2].targetGift = name[2]
-      this.resetTrigger = new Date()
-      this.isRandomSelect = false
-    },
-    sportsAchievementAwardClick () {
-      const name = this.splitName(this.awards.sportsAchievementAward)
-      this.title = '體育獎'
-      this.configs[0].targetGift = name[0]
-      this.configs[1].targetGift = name[1]
-      this.configs[2].targetGift = name[2]
-      this.resetTrigger = new Date()
-      this.isRandomSelect = false
     },
     playMusic () {
       if (this.music && !this.music.paused) {
